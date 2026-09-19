@@ -1,10 +1,10 @@
-﻿# All-Weather-Advance-ANPR-system
+# All-Weather-Advance-ANPR-system
 
 A highly advanced Automatic Number Plate Recognition (ANPR) system engineered to function robustly in severely degraded environmental conditions. By integrating state-of-the-art Image Restoration networks (Restormer, ESRGAN, NAFNet) into a real-time YOLOv10/PaddleOCR pipeline, this system successfully recovers and reads license plates obscured by heavy rain, fog, motion blur, and defocus.
 
 ## Architecture Overview
 
-\\\
+```text
 Camera Feed (WebSockets/OpenCV)
     │
     ▼
@@ -38,7 +38,7 @@ Camera Feed (WebSockets/OpenCV)
 ┌──────────────────────────────────────────────────┐
 │  Multi-Camera Web Dashboard (WebSockets)         │  ← Real-time UI and Forensic Search
 └──────────────────────────────────────────────────┘
-\\\
+```
 
 ## System Output
 
@@ -51,7 +51,8 @@ The system generates both real-time telemetry and database logs containing clean
 
 ## Directory Structure
 
-\\\
+```text
+All-Weather-Advance-ANPR-system/
 ├── anpr_dashboard/             # Django project settings and routing
 ├── core/                       # Main ANPR application and models
 │   ├── ESRGAN/                 # Super-resolution architecture and weights
@@ -61,12 +62,10 @@ The system generates both real-time telemetry and database logs containing clean
 │   ├── models.py               # Database schemas (VehicleRegistry, SightingLog)
 │   ├── views.py                # Core vision pipeline and HTTP endpoints
 │   └── templates/              # Dashboard UIs (multicamera, forensic search)
-│
 ├── media/                      # Storage for raw and restored snapshot crops
 ├── yolov10m.pt                 # YOLOv10 Medium weights for high-speed detection
-├── manage.py                   # Django CLI
-└── README.md                   # Project documentation
-\\\
+└── manage.py                   # Django CLI
+```
 
 ## How to Run
 
@@ -77,33 +76,32 @@ The system generates both real-time telemetry and database logs containing clean
 
 ### 2. Install Dependencies
 
-\\\ash
+```bash
 # Create a virtual environment
 python -m venv venv
 source venv/bin/activate
 
 # Install core requirements
 pip install django channels daphne torch torchvision opencv-python ultralytics paddlepaddle paddleocr scikit-image
-\\\
-*(Note: Ensure you download the pretrained .pth weights for Restormer and ESRGAN and place them in their respective core/*/pretrained_models/ directories).*
+```
 
 ### 3. Run the Application
 
-\\\ash
+```bash
 # Run database migrations
 python manage.py makemigrations
 python manage.py migrate
 
 # Start the ASGI server (Daphne) for WebSockets
 daphne -b 0.0.0.0 -p 8000 anpr_dashboard.asgi:application
-\\\
+```
 
 ### 4. Usage
-1. Open http://localhost:8000/dashboard to access the Multi-Camera Live View.
-2. The system automatically connects via WebSockets (ws://) to ingest simulated or real RTSP camera streams.
+1. Open `http://localhost:8000/dashboard` to access the Multi-Camera Live View.
+2. The system automatically connects via WebSockets (`ws://`) to ingest simulated or real RTSP camera streams.
 3. As vehicles pass, YOLOv10 extracts the plate. If it detects noise/rain, the frame is routed through the PyTorch Restoration Engine before hitting PaddleOCR.
-4. Alerts are generated dynamically on the dashboard if a vehicle violates programmed logic (e.g., specific trailing digits banned on certain weekdays).
-5. Use the Forensic Dashboard (/forensic) to search the SQLite database by color, type, or partial plate.
+4. Alerts are generated dynamically on the dashboard if a vehicle violates programmed logic.
+5. Use the Forensic Dashboard (`/forensic`) to search the SQLite database by color, type, or partial plate.
 
 ## Key Design Decisions
 
